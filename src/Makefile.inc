@@ -17,7 +17,7 @@ all: clean $(TARGETS)
 
 .PHONY: test
 test: all $(TESTS)
-	set -e ; for test in ./*_tb ; do "$${test}" ; done
+	set -e ; for test in ./*_tb ; do "$${test}" --assert-level=error ; done
 
 .PHONY: clean
 clean:
