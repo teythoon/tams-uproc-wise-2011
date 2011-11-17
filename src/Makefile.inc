@@ -1,5 +1,5 @@
 WORKDIR      ?= work
-GHDL_OPTIONS ?= --workdir="$(WORKDIR)"
+GHDL_OPTIONS ?= --workdir="$(WORKDIR)" --warn-reserved --warn-default-binding --warn-binding --warn-error
 
 %.o: %.vhdl
 	mkdir -p work
