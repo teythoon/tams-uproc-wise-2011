@@ -7,7 +7,7 @@ GHDL_OPTIONS ?= --workdir="$(WORKDIR)" --warn-reserved --warn-default-binding --
 	ghdl -a $(GHDL_OPTIONS) "$<"
 
 %: %.o
-	ghdl -e $(GHDL_OPTIONS) "$@"
+	ghdl -m $(GHDL_OPTIONS) "$@"
 
 %.vcd: %
 	ghdl -r $(GHDL_OPTIONS) "$<" --vcd="$@"
