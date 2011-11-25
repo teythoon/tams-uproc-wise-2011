@@ -1,5 +1,12 @@
+TARGETS = architecture.pdf
+DEPLOY_PATH ?= publisher:public_html/tams-uproc-wise-2011
+
 .PHONY: all
-all: architecture.pdf
+all: $(TARGETS)
+
+.PHONY: deploy
+deploy: $(TARGETS)
+	rsync -av $(TARGETS) $(DEPLOY_PATH)
 
 opcodes.tex: ../src/opcodes.yaml
 	../scripts/opcodes.py tex "$<" "$@"
