@@ -1,18 +1,12 @@
 #!/usr/bin/env python
 
 import sys
-import os
-import ast
-import yaml
-
-import pprint
 
 def usage(message = None):
     if message != None:
         sys.stderr.write('%s\n' % message)
     sys.exit("Usage: %s (vhdl|tex) opcode_file [write_to]" % sys.argv[0])
 
-from instruction import Instruction
 from target import Target
 
 if len(sys.argv) == 3:
