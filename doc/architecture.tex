@@ -28,21 +28,27 @@ endian.
 
 \subsection{Registers}
 
-There are 32 general purpose registers. While some of those serve a
-special role, each can be manipulated using all the instructions that
-utilize a register.
+There are 32 registers. The first 24 are general purpose registers,
+the last eight serve a special role. Each register can be manipulated
+using all the instructions that utilize a register.
+
+Each special register has a symbolic name, given in square brackets in
+the table below.
 
 \begin{center}
-  \begin{tabular}{c|l}
+  \begin{tabular}{l|l}
     Register & \\
     \hline
-    \%0 - \%26 & general purpose register \\
-    \%27         & base pointer \\
-    \%28         & stack pointer \\
-    \%29         & status register \\
-    \%30         & program counter. The highest bit must be set to 0. \\
-    \%31         & zero register. Reading from zero yields zero, \\
-    & writing to it is ignored. '\_' is an alias for \%31. \\
+    \%0 - \%23   & general purpose register \\
+    \%24 [\%ac]  & accumulator \\
+    \%25 [\%pl]  & procedure linkage table \\
+    \%26 [\%lr]  & link register \\
+    \%27 [\%bp]  & base pointer \\
+    \%28 [\%sp]  & stack pointer \\
+    \%29 [\%st]  & status register \\
+    \%30 [\%pc]  & program counter. The highest bit must be set to 0. \\
+    \%31 [\_]    & zero register. Reading from \%31 yields zero, \\
+                 & writing to it is ignored. \\
   \end{tabular}
 \end{center}
 
