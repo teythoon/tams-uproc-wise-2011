@@ -22,7 +22,7 @@ instructions:
 
   control:
     - [nop, do nothing, [v]]
-    - [br, branch and link, [rr, rrri]]
+    - [br, branch and link, [rrri]]
 
   data:
     - [li, load immediate, [ri]]
