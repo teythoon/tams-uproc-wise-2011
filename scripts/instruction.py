@@ -9,7 +9,7 @@ class Instruction(object):
             if cls.next_instruction > 1 << cls.width:
                 raise KeyError('Ran out of opcodes')
 
-    def __init__(self, opcodes, instruction, format, (conditional, shortcut), kind, description, modifier = ''):
+    def __init__(self, opcodes, instruction, format, (conditional, shortcut), kind, description, modifier = '', show_format = True):
         # kinky ;)
         self.__dict__.update(locals())
         del self.__dict__['self']
@@ -53,8 +53,7 @@ class Instruction(object):
 
     @property
     def symbol(self):
-        formats = self.opcodes['instructions'][self.kind][self.instruction][1]
-        if len(formats) == 1:
-            return self.instruction + self.shortcut + self.modifier
+        if self.show_format:
+            return self.instruction + self.format + self.shortcut + self.modifier
         else:
-            return self.instruction + self.format + self.shortcut + self.modifie
+            return self.instruction + self.shortcut + self.modifier

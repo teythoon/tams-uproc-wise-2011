@@ -17,7 +17,7 @@ elif len(sys.argv) == 4:
 else:
     usage('Wrong number of arguments')
 
-if format_ not in ('vhdl', 'tex'):
+if format_ not in ('vhdl', 'tex', 'c'):
     usage('Unknown format %r' % format_)
 
 

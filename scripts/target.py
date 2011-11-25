@@ -19,14 +19,14 @@ class Target(object):
                 Instruction.align(0x07)
                 if kind == 'arithmetic':
                     for modifier in ('', 's'):
-                        self.create_instruction(opcodes, kind, instruction, description, formats, modifier)
+                        self.create_instruction(opcodes, kind, instruction, description, formats, modifier, show_format = False)
                 else:
-                    self.create_instruction(opcodes, kind, instruction, description, formats)
+                    self.create_instruction(opcodes, kind, instruction, description, formats, show_format = True)
 
-    def create_instruction(self, opcodes, kind, instruction, description, formats, modifier = ''):
+    def create_instruction(self, opcodes, kind, instruction, description, formats, modifier = '', show_format = True):
         for format in formats:
             for (conditional, shortcut) in opcodes['conditionals']:
-                self.instructions.append(Instruction(opcodes, instruction, format, (conditional, shortcut), kind, description, modifier))
+                self.instructions.append(Instruction(opcodes, instruction, format, (conditional, shortcut), kind, description, modifier, show_format))
 
     def __getitem__(self, key):
         return getattr(self, key)
@@ -39,6 +39,7 @@ class Target(object):
         return dict(
             vhdl = VHDL,
             tex = Tex,
+            c = C,
         )[target](*args, **kwargs)
 
 class VHDL(Target):
@@ -74,3 +75,12 @@ class Tex(Target):
     
     def escape(self, s):
         return s.replace('<', '\(\langle\)')
+
+class C(Target):
+    name = 'c'
+
+    enum_values_format = r'op_%(symbol)s = 0x%(opcode)02x'
+
+    @property
+    def enum_values(self):
+        return ',\n  '.join(self.enum_values_format % i for i in self.instructions)

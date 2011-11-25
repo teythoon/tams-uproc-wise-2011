@@ -1,0 +1,8 @@
+#ifndef   OPCODES_H
+#define   OPCODES_H
+
+typedef enum opcode {
+  %(enum_values)s
+} opcode_t;
+
+#endif /* OPCODES_H */
