@@ -24,9 +24,9 @@ class Target(object):
                     self.create_instruction(opcodes, kind, instruction, description, formats, show_format = True)
 
     def create_instruction(self, opcodes, kind, instruction, description, formats, modifier = '', show_format = True):
-        for format in formats:
+        for format_ in formats:
             for (conditional, shortcut) in opcodes['conditionals']:
-                self.instructions.append(Instruction(opcodes, instruction, format, (conditional, shortcut), kind, description, modifier, show_format))
+                self.instructions.append(Instruction(opcodes, instruction, format_, (conditional, shortcut), kind, description, modifier, show_format and format_ != 'v'))
 
     def __getitem__(self, key):
         return getattr(self, key)
