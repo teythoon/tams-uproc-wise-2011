@@ -1,0 +1,5 @@
+\begin{longtable}{l|l|l|l}
+  Mnemonic & conditionals & parameter format & bits \\
+  \hline
+  %(table_rows)s
+\end{longtable}

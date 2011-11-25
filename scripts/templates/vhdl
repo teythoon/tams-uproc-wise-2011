@@ -1,0 +1,10 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+package opcodes is
+  %(opcode_definitions)s
+  type alu_opcode is (
+    %(opcode_enumeration)s
+  );
+end opcodes;
