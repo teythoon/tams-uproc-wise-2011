@@ -1,0 +1,43 @@
+formats:
+  v: void
+  r: Reg0/5
+  ri: Reg0/5, Imm/19
+  rr: Reg0/5, Reg1/5
+  rrri: Reg0/5, Reg1/5 + (Reg2/5 << Imm/9)
+  rrrr: Reg0/5, Reg1/5, Reg2/5, Reg3/5
+
+instructions:
+  arithmetic:
+    - [li, load immediate, [ri]]
+    - [mov, move word, [rr]]
+    - [add, Add two signed values, [rr]]
+    - [sub, Subtract two signed values, [rr]]
+    - [mul, Compute the product of two signed values, [rr]]
+    - [div, Divide two signed values, [rr]]
+    - [and, Bitwise and, [rr]]
+    - [or, Bitwise or, [rr]]
+    - [xor, Bitwise xor, [rr]]
+    - [not, Bitwise not, [r]]
+
+  comparison:
+    - [cmp, compares two signed values, [rr, ri]]
+
+  control:
+    - [nop, do nothing, [v]]
+    - [br, branch and link, [rr, rrri]]
+
+  memory:
+    - [ld, load a word, [rrri]]
+    - [st, store a word, [rrri]]
+    - [pop, pop up to four registers of the stack, [rrrr]]
+    - [push, push up to four registers to the stack, [rrrr]]
+
+conditionals:
+  - [always, ""]
+  - [equal, eq]
+  - [not equal, ne]
+  - [higher or same, hs]
+  - [lower, lo]
+  - [negative, mi]
+  - [positive, pl]
+  - [overflow, vs]
