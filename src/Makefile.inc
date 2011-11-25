@@ -1,12 +1,9 @@
 WORKDIR      ?= work
 GHDL_OPTIONS ?= --workdir="$(WORKDIR)" --warn-reserved --warn-default-binding --warn-binding --warn-error
 
-%.o: %.vhdl
+%:
 	mkdir -p work
 	ghdl -i $(GHDL_OPTIONS) *vhdl
-	ghdl -a $(GHDL_OPTIONS) "$<"
-
-%: %.o
 	ghdl -m $(GHDL_OPTIONS) "$@"
 
 %.vcd: %
@@ -16,8 +13,8 @@ GHDL_OPTIONS ?= --workdir="$(WORKDIR)" --warn-reserved --warn-default-binding --
 all: clean $(TARGETS)
 
 .PHONY: test
-test: all $(TESTS)
-	set -e ; for test in ./*_tb ; do "$${test}" --assert-level=error ; done
+test: $(TESTS)
+	set -e ; for test in $(TESTS) ; do "$${test}" --assert-level=error ; done
 
 .PHONY: clean
 clean:
