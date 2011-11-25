@@ -3,22 +3,22 @@ formats:
   r: Reg0/5
   ri: Reg0/5, Imm/19
   rr: Reg0/5, Reg1/5
-  rrri: Reg0/5, Reg1/5 + (Reg2/5 << Imm/9)
+  rrri: Reg0/5, Reg1/5, Reg2/5, Imm/9
   rrrr: Reg0/5, Reg1/5, Reg2/5, Reg3/5
 
 instructions:
   arithmetic:
-    - [add, Add two signed values, [rr]]
-    - [sub, Subtract two signed values, [rr]]
-    - [mul, Compute the product of two signed values, [rr]]
-    - [div, Divide two signed values, [rr]]
-    - [and, Bitwise and, [rr]]
-    - [or, Bitwise or, [rr]]
-    - [xor, Bitwise xor, [rr]]
-    - [not, Bitwise not, [r]]
+    - [add, Add two signed values, [rrri]]
+    - [sub, Subtract two signed values, [rrri]]
+    - [mul, Compute the product of two signed values, [rrri]]
+    - [div, Divide two signed values, [rrri]]
+    - [and, Bitwise and, [rrri]]
+    - [or, Bitwise or, [rrri]]
+    - [xor, Bitwise xor, [rrri]]
+    - [not, Bitwise not, [rr]]
 
   comparison:
-    - [cmp, compares two signed values, [rr, ri]]
+    - [cmp, compares two signed values, [rrri]]
 
   control:
     - [nop, do nothing, [v]]
