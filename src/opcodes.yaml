@@ -8,8 +8,6 @@ formats:
 
 instructions:
   arithmetic:
-    - [li, load immediate, [ri]]
-    - [mov, move word, [rr]]
     - [add, Add two signed values, [rr]]
     - [sub, Subtract two signed values, [rr]]
     - [mul, Compute the product of two signed values, [rr]]
@@ -25,6 +23,10 @@ instructions:
   control:
     - [nop, do nothing, [v]]
     - [br, branch and link, [rr, rrri]]
+
+  data:
+    - [li, load immediate, [ri]]
+    - [mov, move word, [rr]]
 
   memory:
     - [ld, load a word, [rrri]]
