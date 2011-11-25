@@ -16,7 +16,7 @@ class Target(object):
 
         for kind, instructions in opcodes['instructions'].items():
             for instruction, description, formats in instructions:
-                Instruction.align(0x07)
+                Instruction.align(0x0f if kind == 'arithmetic' else 0x07)
                 if kind == 'arithmetic':
                     for modifier in ('', 's'):
                         self.create_instruction(opcodes, kind, instruction, description, formats, modifier, show_format = False)
