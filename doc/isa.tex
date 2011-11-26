@@ -1,0 +1,81 @@
+\section{Instruction set architecture}
+
+\subsection{Data types}
+
+The \cpu uses a word size of 32 bit. All integers are interpreted as
+signed, encoded using the two's complement. The word ordering is big
+endian.
+
+\subsection{Registers}
+
+There are 32 registers. The first 24 are general purpose registers,
+the last eight serve a special role. Each register can be manipulated
+using all the instructions that utilize a register.
+
+Each special register has a symbolic name, given in square brackets in
+the table below.
+
+\begin{center}
+  \begin{tabular}{l|l}
+    Register & \\
+    \hline
+    \%0 - \%23   & general purpose register \\
+    \%24 [\%ac]  & accumulator \\
+    \%25 [\%pl]  & procedure linkage table \\
+    \%26 [\%lr]  & link register \\
+    \%27 [\%bp]  & base pointer \\
+    \%28 [\%sp]  & stack pointer \\
+    \%29 [\%st]  & status register \\
+    \%30 [\%pc]  & program counter. The highest bit must be set to 0. \\
+    \%31 [\_]    & zero register. Reading from \%31 yields zero, \\
+                 & writing to it is ignored. \\
+  \end{tabular}
+\end{center}
+
+\subsubsection{The accumulator \%ac}
+\subsubsection{The procedure linkage table register \%pl}
+\subsubsection{The link register \%lr}
+\subsubsection{The base pointer register \%bp}
+\subsubsection{The stack pointer register \%sp}
+
+\subsubsection{The status register \%st}
+\begin{center}
+  \begin{tabular}{l|l}
+    Bit    & Description \\
+    \hline
+    31 - 5 & reserved \\
+    4      & interupt privilege \\
+    3      & secure mode \\
+    2      & arithmetic instruction resulted in signed overflow \\
+    1      & arithmetic instructions result was negative \\
+    0      & arithmetic instructions result was zero \\
+  \end{tabular}
+\end{center}
+
+\subsubsection{The program counter \%pc}
+\subsubsection{The zero register \_}
+
+\subsection{Instruction encoding}
+
+The instruction width is four bytes, the first one (i.e. bits 31-24)
+encodes the opcode, the others are used to encode parameters.
+
+\subsubsection{Anatomy of an opcode}
+
+\begin{center}
+  \begin{tabular}{c|l}
+    Bit & \\
+    \hline
+    7 - 3  & Instruction selector. \\
+    3      & Arithmetic instructions only: Denotes that the status \\
+           & register should be updated. \\
+    2 - 0  & Conditional selector. \\
+  \end{tabular}
+\end{center}
+
+\subsubsection{Parameter formats}
+
+\subsection{Memory model}
+\subsection{Interupt handling}
+\subsection{Security model}
+\subsection{Power on state}

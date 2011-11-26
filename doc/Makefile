@@ -11,7 +11,7 @@ deploy: $(TARGETS)
 opcodes.tex: ../src/opcodes.yaml
 	../scripts/opcodes.py tex "$<" "$@"
 
-architecture.pdf: opcodes.tex
+architecture.pdf: opcodes.tex isa.tex abi.tex
 
 %.pdf: %.tex
 	rubber --ps --pdf "$<"
