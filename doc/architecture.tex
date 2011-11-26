@@ -63,7 +63,18 @@ the table below.
   \end{tabular}
 \end{center}
 
-\subsubsection{Control registers}
+\subsubsection{The status register \%st}
+\begin{center}
+  \begin{tabular}{l|l}
+    Bit    & Description \\
+    \hline
+    31 - 4 & reserved \\
+    3      & management mode \\
+    2      & arithmetic instruction resulted in signed overflow \\
+    1      & arithmetic instructions result was negative \\
+    0      & arithmetic instructions result was zero \\
+  \end{tabular}
+\end{center}
 
 \subsection{Instruction encoding}
 
