@@ -6,6 +6,14 @@
 \usepackage{longtable}
 \usepackage[usenames,dvipsnames]{color}
 
+\lstset{
+  numbers=left,
+  frame=leftline,
+  breaklines=true,
+  keywordstyle=\color{Blue},
+  identifierstyle=\color{Green}
+}
+
 \newcommand{\cpu}{processor}
 
 \author{Claudius, Irina, Justus, Paul}
@@ -16,9 +24,12 @@ tams-uproc-wise-2011}
 \begin{document}
 
 \maketitle
-\tableofcontents
+\newpage
 
-\section{ABI}
+\tableofcontents
+\newpage
+
+\section{Instruction set architecture}
 
 \subsection{Data types}
 
@@ -72,8 +83,44 @@ encodes the opcode, the others are used to encode parameters.
   \end{tabular}
 \end{center}
 
-\subsubsection{List of opcodes}
+\section{Application binary interface}
 
+\subsection{Calling convention}
+
+\newcommand{\I}[1]{\emph{#1}}
+
+Function calls are implemented using the synthetic \I{call}
+instruction. \I{call Reg0} is equivalent to \I{br \%lr, Reg0, \_,
+  0}. \I{br} stores the return address \(\%pc + 4\) into \I{\%lr}.
+
+The registers \(\%0 - \%7\) are used to hand parameters to the callee,
+serve as scratch registers for the callee and can be used to return
+values to the caller.
+
+The caller must consider those registers dirty after a function call.
+The callee can choose to hand results back to the caller.
+
+TODO: push more arguments to the stack
+
+\subsection{Function prologue}
+
+\begin{lstlisting}
+function_start:    push %pl, %lr, %bp, %st
+                   mov %bp, %sp
+\end{lstlisting}
+
+\subsection{Function epilogue}
+
+\begin{lstlisting}
+                   mov %sp, %bp
+                   pop %sp, %bp, %lr, %pl
+                   ret
+\end{lstlisting}
+
+\appendix
+\section{\appendixname}
+
+\subsection{List of opcodes}
 \include{opcodes}
 
 \end{document}
