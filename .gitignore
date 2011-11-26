@@ -1,0 +1,5 @@
+.gdb_history
+*.pyc
+*.pyo
+*~
+*_tb
