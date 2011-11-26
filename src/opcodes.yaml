@@ -1,5 +1,6 @@
 formats:
   v: void
+  i: Imm/8
   r: Reg0/5
   ri: Reg0/5, Imm/19
   rr: Reg0/5, Reg1/5
@@ -21,8 +22,14 @@ instructions:
     - [cmp, compares two signed values, [rrri]]
 
   control:
+    - [int, interupt, [i]]
     - [nop, do nothing, [v]]
     - [br, branch and link, [rrri]]
+    - [call, call, [i]]
+    - [ret, return from function, [v]]
+    - [reti, return from interupt handler, [v]]
+    - [drop, drop privileges, [v]]
+    - [dropi, drop interupt privilege, [v]]
 
   data:
     - [li, load immediate, [ri]]
