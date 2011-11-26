@@ -35,10 +35,6 @@ architecture behavior of alu_tb is
                            OpCode     : alu_opcode;  -- what to do
                          end record;
 
-        constant one_word : data_bus := data_bus(to_signed(1, word_width));
-        constant two_word : data_bus := data_bus(to_signed(2, word_width));
-        constant three_word : data_bus := data_bus(to_signed(3, word_width));
-
         type alu_tests is array (natural range <>) of alu_test;
         constant tests : alu_tests :=
           (
