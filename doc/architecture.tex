@@ -63,25 +63,35 @@ the table below.
   \end{tabular}
 \end{center}
 
+\subsubsection{The accumulator \%ac}
+\subsubsection{The procedure linkage table register \%pl}
+\subsubsection{The link register \%lr}
+\subsubsection{The base pointer register \%bp}
+\subsubsection{The stack pointer register \%sp}
+
 \subsubsection{The status register \%st}
 \begin{center}
   \begin{tabular}{l|l}
     Bit    & Description \\
     \hline
-    31 - 4 & reserved \\
-    3      & management mode \\
+    31 - 5 & reserved \\
+    4      & interupt privilege \\
+    3      & secure mode \\
     2      & arithmetic instruction resulted in signed overflow \\
     1      & arithmetic instructions result was negative \\
     0      & arithmetic instructions result was zero \\
   \end{tabular}
 \end{center}
 
+\subsubsection{The program counter \%pc}
+\subsubsection{The zero register \_}
+
 \subsection{Instruction encoding}
 
 The instruction width is four bytes, the first one (i.e. bits 31-24)
 encodes the opcode, the others are used to encode parameters.
 
-\subsection{Opcodes}
+\subsubsection{Anatomy of an opcode}
 
 \begin{center}
   \begin{tabular}{c|l}
@@ -93,6 +103,13 @@ encodes the opcode, the others are used to encode parameters.
     2 - 0  & Conditional selector. \\
   \end{tabular}
 \end{center}
+
+\subsubsection{Parameter formats}
+
+\subsection{Memory model}
+\subsection{Interupt handling}
+\subsection{Security model}
+\subsection{Power on state}
 
 \section{Application binary interface}
 
