@@ -32,7 +32,10 @@ begin  -- behavior
     value_a <= z_word;
     value_b <= z_word;
 
---    if clock'event and clock = '1' and enabled = '1' then
+---   if clock'event and clock = '1' and enabled = '1' then --- throws Error (10818): 
+																				--- Can't infer register for "value_b[0]" at 
+																				--- registers.vhdl(35) because it does not hold
+																				--- its value outside the clock edge
     if clock = '1' and enabled = '1' then
       case write is
         when '1' =>
