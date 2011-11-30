@@ -32,7 +32,8 @@ begin  -- behavior
     value_a <= z_word;
     value_b <= z_word;
 
-    if clock'event and clock = '1' and enabled = '1' then
+--    if clock'event and clock = '1' and enabled = '1' then
+    if clock = '1' and enabled = '1' then
       case write is
         when '1' =>
           register_bank(select_a) := value_a;
