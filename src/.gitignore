@@ -2,3 +2,5 @@
 /opcodes.vhdl
 /processor
 work
+/incremental_db
+/simulation
