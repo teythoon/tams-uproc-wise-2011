@@ -13,14 +13,14 @@ architecture behavior of alu_tb is
     port (
       operand_0, operand_1 : in data_bus;
       result               : out data_bus;
-      Clk        : in std_logic;          -- clock
+      enabled        : in std_logic;          -- clock
       OpCode     : in alu_opcode);
   end component;
 
   for alu_0: alu use entity work.alu;
   
   signal operand_0, operand_1, result : data_bus;
-  signal Clk : std_logic;
+  signal enabled : std_logic;
   signal OpCode : alu_opcode;
 
 begin
@@ -29,7 +29,7 @@ begin
     operand_0 => operand_0,
     operand_1 => operand_1,
     result => result,
-    Clk => Clk,
+    enabled => enabled,
     OpCode => OpCode);
 
   -- purpose: testbench for alu
@@ -50,14 +50,14 @@ begin
 
   begin  -- process
     for i in tests'range loop
-      Clk <= '0';
+      enabled <= '0';
       wait for 1 ns;
 
       operand_0 <= tests(i).operand_0;
       operand_1 <= tests(i).operand_1;
       OpCode <= tests(i).OpCode;
 
-      Clk <= '1';
+      enabled <= '1';
       wait for 1 ns;
 
       assert result = tests(i).Result

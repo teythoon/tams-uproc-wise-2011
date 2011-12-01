@@ -9,7 +9,7 @@ entity alu is
   port (
     operand_0, operand_1 : in data_bus;
     result               : out data_bus;
-    Clk        : in std_logic;          -- clock
+    enabled              : in std_logic;
     OpCode     : in alu_opcode);
 
 end alu;
@@ -18,10 +18,10 @@ end alu;
 
 architecture behavior of alu is
 begin  -- behavior
-  alu_process: process (Clk)
+  alu_process: process (enabled)
   variable add_result : std_logic_vector(word_width downto 0);  -- one bit wider than word
   begin  -- process
-    if(rising_edge(Clk)) then
+    if(rising_edge(enabled)) then
       case OpCode is
         when alu_add =>
           add_result := std_logic_vector(unsigned('0' & operand_0) + unsigned('0' & operand_1));
