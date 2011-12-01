@@ -4,3 +4,6 @@
 work
 /incremental_db
 /simulation
+/tams-uproc-wise-2011.*
+/tams-uproc-wise-2011_nativelink_simulation.rpt
+/*.bak
