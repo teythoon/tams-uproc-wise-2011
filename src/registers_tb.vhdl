@@ -18,8 +18,7 @@ architecture behavior of registers_tb is
       select_a, select_b : in integer range 0 to register_count;
       value_a, value_b   : inout data_bus;
       write              : in std_logic;  -- set to 1 to write
-      enabled            : in std_logic;  -- set to 1 to enable
-      clock              : in std_logic);  -- register bank clock is doubled
+      enabled            : in std_logic);  -- set to 1 to enable
   end component;
 
   for registers_0: registers use entity work.registers;
@@ -28,7 +27,6 @@ architecture behavior of registers_tb is
   signal value_a, value_b   : data_bus;
   signal write              : std_logic;
   signal enabled            : std_logic;
-  signal clock              : std_logic;
 
   begin
       registers_0: registers port map (
@@ -37,8 +35,7 @@ architecture behavior of registers_tb is
         value_a  => value_a,
         value_b  => value_b,
         write    => write,
-        enabled  => enabled,
-        clock    => clock
+        enabled  => enabled
       );
 
       -- purpose: testbench for registers
@@ -47,25 +44,22 @@ architecture behavior of registers_tb is
         type registers_test is record         -- a single test
           select_a, select_b : integer range 0 to register_count;
           value_a, value_b   : data_bus;
-          expect_a, expect_b : data_bus;
-          enabled            : std_logic;
         end record;
 
         type registers_tests is array (natural range <>) of registers_test;
         constant tests : registers_tests :=
           (
             -- TODO: figure out why 0 results in a bounds error
-            (1, 2, zero_word, one_word, zero_word, one_word, '1'),
-            (1, 2, zero_word, zero_word, zero_word, one_word, '0'),
-            (3, 4, zero_word, zero_word, zero_word, zero_word, '1'),
-            (1, 2, zero_word, zero_word, zero_word, one_word, '0'),
-            (3, 4, zero_word, zero_word, zero_word, zero_word, '0')
+            (1, 2, zero_word, one_word),
+            (1, 2, one_word, zero_word),
+            (3, 4, two_word, zero_word),
+            (1, 2, zero_word, three_word),
+            (3, 4, zero_word, zero_word)
           );
 
       begin  -- process
         for i in tests'range loop
           enabled <= '0';
-          clock <= '0';
           wait for 1 ns;
 
           -- write phase
@@ -73,11 +67,11 @@ architecture behavior of registers_tb is
           select_b <= tests(i).select_b;
           value_a <= tests(i).value_a;
           value_b <= tests(i).value_b;
-          enabled <= tests(i).enabled;
+          enabled <= '1';
           write <= '1';
 
-          -- generate clock pulse
-          clock <= '1';
+          -- generate enabled pulse
+          enabled <= '1';
           wait for 1 ns;
 
           -- prepare for read phase, set bus on high impedance
@@ -86,7 +80,7 @@ architecture behavior of registers_tb is
           enabled <= '0';
           write <= '0';
 
-          clock <= '0';
+          enabled <= '0';
           wait for 1 ns;
 
           -- read phase
@@ -94,11 +88,11 @@ architecture behavior of registers_tb is
           select_b <= tests(i).select_b;
           enabled <= '1';
 
-          -- generate clock pulse
-          clock <= '1';
+          -- generate enabled pulse
+          enabled <= '1';
           wait for 1 ns;
 
-          assert value_a = tests(i).expect_a and value_b = tests(i).expect_b
+          assert value_a = tests(i).value_a and value_b = tests(i).value_b
             report "bad result" severity error;
         end loop;
 
