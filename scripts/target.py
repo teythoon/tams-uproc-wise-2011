@@ -7,6 +7,8 @@ def load_template(name):
     return open(os.path.join(os.path.dirname(__file__), 'templates', name)).read()
 
 class Target(object):
+    targets = dict()
+
     def __init__(self):
         self.instructions = list()
         self.template = load_template(self.name)
@@ -36,51 +38,9 @@ class Target(object):
 
     @classmethod
     def make(cls, target, *args, **kwargs):
-        return dict(
-            vhdl = VHDL,
-            tex = Tex,
-            c = C,
-        )[target](*args, **kwargs)
+        return cls.targets[target](*args, **kwargs)
 
-class VHDL(Target):
-    name = 'vhdl'
-
-    instruction_format = 'constant op_%(symbol)s : std_logic_vector(word_width - 1 downto 0) := "%(bin)s";  -- %(long_description)s'
-
-    @property
-    def opcode_definitions(self):
-        return '\n  '.join(self.instruction_format % i for i in self.instructions)
-
-    @property
-    def opcode_enumeration(self):
-        return ',\n    '.join('%(symbol)s' % i for i in self.instructions)
-
-class Tex(Target):
-    name = 'tex'
-
-    table_row_format = r'%(mnemonic)s & %(conditional)s & %(long_format)s & %(bin)s \\'
-
-    @property
-    def table_rows(self):
-        rows = []
-        
-        lastinstruction = None
-        for i in self.instructions:
-            if lastinstruction != None and lastinstruction != i.instruction:
-                rows.append('\hline')
-            lastinstruction = i.instruction
-            rows.append(self.escape(self.table_row_format % i))
-
-        return '\n    '.join(rows)
-    
-    def escape(self, s):
-        return s.replace('<', '\(\langle\)')
-
-class C(Target):
-    name = 'c'
-
-    enum_values_format = r'op_%(symbol)s = 0x%(opcode)02x'
-
-    @property
-    def enum_values(self):
-        return ',\n  '.join(self.enum_values_format % i for i in self.instructions)
+    @classmethod
+    def register(cls, target):
+        cls.targets[target.__name__.lower()] = target
+        return target

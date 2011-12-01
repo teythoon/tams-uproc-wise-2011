@@ -2,12 +2,15 @@
 
 import sys
 
+from target import Target
+import vhdl
+import tex
+import c
+
 def usage(message = None):
     if message != None:
         sys.stderr.write('%s\n' % message)
-    sys.exit("Usage: %s (vhdl|tex) opcode_file [write_to]" % sys.argv[0])
-
-from target import Target
+    sys.exit("Usage: %s (%s) opcode_file [write_to]" % (sys.argv[0], '|'.join(Target.targets.keys())))
 
 if len(sys.argv) == 3:
     format_, opcode_file = sys.argv[1:]
@@ -17,9 +20,8 @@ elif len(sys.argv) == 4:
 else:
     usage('Wrong number of arguments')
 
-if format_ not in ('vhdl', 'tex', 'c'):
+if format_ not in Target.targets:
     usage('Unknown format %r' % format_)
-
 
 target = Target.make(format_)
 target.parse(open(opcode_file))
