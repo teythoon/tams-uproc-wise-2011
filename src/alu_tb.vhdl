@@ -14,14 +14,14 @@ architecture behavior of alu_tb is
       operand_0, operand_1 : in data_bus;
       result               : out data_bus;
       enabled        : in std_logic;          -- clock
-      OpCode     : in alu_opcode);
+      OpCode     : in alu_opcode_t);
   end component;
 
   for alu_0: alu use entity work.alu;
   
   signal operand_0, operand_1, result : data_bus;
   signal enabled : std_logic;
-  signal OpCode : alu_opcode;
+  signal OpCode : alu_opcode_t;
 
 begin
 
@@ -39,7 +39,7 @@ begin
     type alu_test is record               -- a single test
       operand_0, operand_1 : data_bus;    -- inputs
       result     : data_bus;              -- result
-      OpCode     : alu_opcode;            -- what to do
+      OpCode     : alu_opcode_t;            -- what to do
     end record;
 
     type alu_tests is array (natural range <>) of alu_test;

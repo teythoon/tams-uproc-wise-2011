@@ -13,7 +13,7 @@ package types is
   constant two_word   : data_bus := data_bus(to_signed(2, word_width));
   constant three_word : data_bus := data_bus(to_signed(3, word_width));
   
-  type alu_opcode is (
+  type alu_opcode_t is (
     alu_add, alu_sub, alu_mul, alu_div,
     alu_and, alu_or, alu_xor, alu_not);                          -- opcodes
 

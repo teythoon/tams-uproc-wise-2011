@@ -10,7 +10,7 @@ entity alu is
     operand_0, operand_1 : in data_bus;
     result               : out data_bus;
     enabled              : in std_logic;
-    OpCode     : in alu_opcode);
+    OpCode     : in alu_opcode_t);
 
 end alu;
 
