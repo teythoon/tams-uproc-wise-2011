@@ -4,7 +4,9 @@ use ieee.numeric_std.all;
 
 package opcodes is
   %(opcode_definitions)s
-  type alu_opcode is (
-    %(opcode_enumeration)s
+
+  %(conditional_definitions)s
+
+  type opcode_t is (
   );
 end opcodes;

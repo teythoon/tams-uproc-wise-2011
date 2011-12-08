@@ -48,6 +48,14 @@ class Instruction(object):
         return bin(self.opcode)[2:].rjust(self.width, '0')
 
     @property
+    def opcode_bin(self):
+        return self.bin[:-3]
+
+    @property
+    def conditional_bin(self):
+        return self.bin[-3:]
+
+    @property
     def mnemonic(self):
         return '%s%s %s' % (self.instruction, self.modifier, self.shortcut)
 
