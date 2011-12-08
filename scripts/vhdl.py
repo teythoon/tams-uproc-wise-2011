@@ -22,4 +22,14 @@ class VHDL(Target):
 
     @property
     def opcode_enumeration(self):
-        return ',\n    '.join('%(symbol)s' % i for i in self.instructions)
+        return ',\n    '.join('%(symbol)s' % i for i in self.opcodes)
+
+    @property
+    def conditional_enumeration(self):
+        return ',\n    '.join(shortcut or 'al'
+                              for (name, shortcut) in self.definitions['conditionals'])
+
+    @property
+    def format_enumeration(self):
+        return ',\n    '.join(name
+                              for (name, description) in self.definitions['formats'].items())

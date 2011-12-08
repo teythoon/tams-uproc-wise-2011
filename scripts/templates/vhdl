@@ -8,5 +8,14 @@ package opcodes is
   %(conditional_definitions)s
 
   type opcode_t is (
+    %(opcode_enumeration)s
+  );
+
+  type conditional_t is (
+    %(conditional_enumeration)s
+  );
+
+  type format_t is (
+    %(format_enumeration)s
   );
 end opcodes;
