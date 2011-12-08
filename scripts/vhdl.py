@@ -22,7 +22,7 @@ class VHDL(Target):
 
     @property
     def opcode_enumeration(self):
-        return ',\n    '.join('%(symbol)s' % i for i in self.opcodes)
+        return ',\n    '.join('in_%(symbol)s' % i for i in self.opcodes)
 
     @property
     def conditional_enumeration(self):
@@ -33,3 +33,23 @@ class VHDL(Target):
     def format_enumeration(self):
         return ',\n    '.join(name
                               for (name, description) in self.definitions['formats'].items())
+
+    instruction_when = r'''
+        when op_{0.symbol} =>
+          instruction <= in_{0.symbol};
+          modify_status <= {1};
+          format <= {0.format};'''
+
+    @property
+    def instruction_cases(self):
+        return '\n'.join(self.instruction_when.format(instruction, "'1'" if instruction.modifier == 's' else "'0'")
+                         for instruction in self.opcodes)
+
+    conditional_when = r'''
+        when cond_{0} =>
+          conditional <= {0}; -- {1}'''
+
+    @property
+    def conditional_cases(self):
+        return '\n'.join(self.conditional_when.format(shortcut or 'al', name)
+                         for (name, shortcut) in self.definitions['conditionals'])

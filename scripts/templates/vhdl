@@ -2,12 +2,12 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-package opcodes is
+package instructions is
   %(opcode_definitions)s
 
   %(conditional_definitions)s
 
-  type opcode_t is (
+  type instruction_t is (
     %(opcode_enumeration)s
   );
 
@@ -18,4 +18,47 @@ package opcodes is
   type format_t is (
     %(format_enumeration)s
   );
-end opcodes;
+end instructions;
+
+entity instruction_decoder is
+
+  port (
+    instruction_word : in  data_bus;
+    instruction      : out instruction_t;
+    modify_status    : out std_logic;
+    conditional      : out conditional_t;
+    format           : out format_t);
+
+end instruction_decoder;
+
+architecture behavior of instruction_decoder is
+
+begin  -- behavior
+
+  -- purpose: decodes the instruction
+  -- type   : combinational
+  -- inputs : instruction_word
+  -- outputs: instruction, modify_status, format
+  decode_instruction: process (instruction_word)
+  begin  -- process decode_instruction
+    case instruction_word(31 downto 27) is
+%(instruction_cases)s
+
+      when others => null;
+    end case;
+  end process decode_instruction;
+
+  -- purpose: decodes the conditional
+  -- type   : combinational
+  -- inputs : instruction_word
+  -- outputs: conditional
+  decode_conditional: process (instruction_word)
+  begin  -- process decode_conditional
+    case instruction_word(26 downto 24) is
+%(conditional_cases)s
+
+      when others => null;
+    end case;
+  end process decode_conditional;
+
+end behavior;
