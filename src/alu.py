@@ -21,7 +21,12 @@ from common import (
     data_bus,
 )
 
-opcode_t = enum('add', 'sub', 'mul', 'div', 'alu_and', 'alu_or', 'alu_xor', 'alu_not')
+opcode_t = enum('add', 'sub', 'mul', 'div', 
+                'alu_and', 'alu_or', 'alu_xor', 'alu_not',
+                'alu_eq', 'alu_neq',
+                'alu_gt', 'alu_lt', 'alu_ge', 'alu_le',)
+
+                
 
 def ALU(opcode, operand_0, operand_1, result):
     @always_comb
@@ -42,6 +47,18 @@ def ALU(opcode, operand_0, operand_1, result):
             result.next = operand_0 ^ operand_1
         elif opcode == opcode_t.alu_not:
             result.next = not operand_0 
+        elif opcode == opcode_t.alu_eq:
+            result.next = operand_0 == operand_1
+        elif opcode == opcode_t.alu_neq:
+            result.next = operand_0 != operand_1
+        elif opcode == opcode_t.alu_gt:
+            result.next = operand_0 > operand_1
+        elif opcode == opcode_t.alu_lt:
+            result.next = operand_0 < operand_1
+        elif opcode == opcode_t.alu_ge:
+            result.next = operand_0 >= operand_1
+        elif opcode == opcode_t.alu_le:
+            result.next = operand_0 <= operand_1
 
     return logic
 
