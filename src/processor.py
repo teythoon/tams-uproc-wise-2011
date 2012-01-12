@@ -20,10 +20,9 @@ from myhdl import (
 
 from common import (
     data_bus,
-    opcode_t,
 )
 
-from alu import ALU
+from alu import ALU, opcode_t
 from registers import RegisterBank
 
 def Processor(clock):

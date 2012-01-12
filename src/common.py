@@ -17,8 +17,6 @@ from myhdl import (
     always_comb,
 )
 
-opcode_t = enum('add', 'sub', 'mul', 'div')
-
 def data_bus(value):
     width = 32
     return intbv(
