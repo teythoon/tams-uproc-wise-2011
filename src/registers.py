@@ -48,8 +48,8 @@ def RegisterBank(
         Updates the values stored in the register bank. Also handles reads.
         '''
         if write_enabled:
-            registers[update_select_a] = update_value_a
-            registers[update_select_b] = update_value_b
+            registers[update_select_a].next = update_value_a
+            registers[update_select_b].next = update_value_b
 
     return logic, read_logic
 
