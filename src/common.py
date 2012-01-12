@@ -19,7 +19,8 @@ from myhdl import (
 
 opcode_t = enum('add', 'sub', 'mul', 'div')
 
-def data_bus(value, width = 32):
+def data_bus(value):
+    width = 32
     return intbv(
         value,
         min = -(2 ** (width - 1)),
