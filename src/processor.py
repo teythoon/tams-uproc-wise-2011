@@ -59,8 +59,8 @@ def Processor(clock):
     @always(clock.posedge)
     def logic():
         opcode.next = opcode_t.add
-        operand_0.next = data_bus(1)
-        operand_1.next = data_bus(1)
+        operand_0.next = 1
+        operand_1.next = 1
 
         update_select_a.next = 0
         update_value_a.next = 0
