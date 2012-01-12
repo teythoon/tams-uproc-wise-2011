@@ -24,8 +24,10 @@ from common import (
 
 def RegisterBank(
     update_select_a, update_value_a,
+    update_select_b, update_value_b,
     write_enabled,
-    select, value,
+    select_a, value_a,
+    select_b, value_b,
     clock,
     number_of_registers = 32):
 
@@ -34,6 +36,12 @@ def RegisterBank(
     '''
 
     registers = [Signal(data_bus(0)) for i in range(number_of_registers)]
+    
+    @always_comb
+    def read_logic():
+        value_a.next = registers[select_a]
+        value_b.next = registers[select_b]
+    
 
     @always(clock.posedge)
     def logic():
@@ -42,24 +50,30 @@ def RegisterBank(
         '''
         if write_enabled:
             registers[update_select_a] = update_value_a
-        value.next = registers[select]
+            registers[update_select_b] = update_value_b
 
-    return logic
+    return logic, read_logic
 
 def bench(number_of_registers = 32):
     update_select_a = Signal(intbv(min = 0, max = number_of_registers))
     update_value_a = Signal(data_bus(0))
+    update_select_b = Signal(intbv(min = 0, max = number_of_registers))
+    update_value_b = Signal(data_bus(0))
     write_enabled = Signal(False)
 
-    select = Signal(intbv(min = 0, max = number_of_registers))
-    result = Signal(data_bus(0))
+    select_a = Signal(intbv(min = 0, max = number_of_registers))
+    result_a = Signal(data_bus(0))
+    select_b = Signal(intbv(min = 0, max = number_of_registers))
+    result_b = Signal(data_bus(0))
 
     clock = Signal(False)
 
     register_bank = RegisterBank(
         update_select_a, update_value_a,
+        update_select_b, update_value_b,
         write_enabled,
-        select, result,
+        select_a, result_a,
+        select_b, result_b,
         clock,
         number_of_registers,
     )
@@ -70,6 +84,8 @@ def bench(number_of_registers = 32):
             for v in range(100):
                 update_select_a.next = i
                 update_value_a.next = v
+                update_select_b.next = i
+                update_value_b.next = v
                 write_enabled.next = True
 
                 clock.next = True
@@ -78,7 +94,8 @@ def bench(number_of_registers = 32):
                 yield delay(10)
 
                 write_enabled.next = False
-                select.next = i
+                select_a.next = i
+                select_b.next = i
 
                 clock.next = True
                 yield delay(10)
@@ -100,18 +117,24 @@ if __name__ == '__main__':
 
     update_select_a = Signal(intbv(min = 0, max = number_of_registers))
     update_value_a = Signal(data_bus(0))
+    update_select_b = Signal(intbv(min = 0, max = number_of_registers))
+    update_value_b = Signal(data_bus(0))
     write_enabled = Signal(False)
 
-    select = Signal(intbv(min = 0, max = number_of_registers))
-    result = Signal(data_bus(0))
+    select_a = Signal(intbv(min = 0, max = number_of_registers))
+    result_a = Signal(data_bus(0))
+    select_b = Signal(intbv(min = 0, max = number_of_registers))
+    result_b = Signal(data_bus(0))
 
     clock = Signal(False)
 
     toVHDL(
         RegisterBank,
         update_select_a, update_value_a,
+        update_select_b, update_value_b,
         write_enabled,
-        select, result,
+        select_a, result_a,
+        select_b, result_b,
         clock,
         number_of_registers,
     )
