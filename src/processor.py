@@ -71,6 +71,26 @@ def Processor(clock):
 
     return alu, register_bank, control_unit
 
+def bench(number_of_registers = 32):
+
+    def ClockDriver(clock, period = 100):
+        @always(delay(period / 2))
+        def drive_clock():
+            clock.next = not clock
+
+        return drive_clock
+
+    clock = Signal(False)
+    clock_driver = ClockDriver(clock)
+
+    processor = Processor(clock)
+
+    return clock_driver, processor
+
+def test_bench():
+    sim = Simulation(traceSignals(bench))
+    sim.run()
+
 if __name__ == '__main__':
     from myhdl import toVHDL
 
