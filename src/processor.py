@@ -22,13 +22,13 @@ from common import (
     data_bus,
 )
 
-from alu import ALU, opcode_t
+from alu import ALU, alu_opcode_t
 from registers import RegisterBank
 
 def Processor(clock):
     number_of_registers = 32
 
-    opcode = Signal(opcode_t.add)
+    opcode = Signal(alu_opcode_t.add)
     operand_0 = Signal(data_bus(0))
     operand_1 = Signal(data_bus(0))
     result = Signal(data_bus(0))
@@ -57,7 +57,7 @@ def Processor(clock):
 
     @always(clock.posedge)
     def logic():
-        opcode.next = opcode_t.add
+        opcode.next = alu_opcode_t.add
         operand_0.next = 1
         operand_1.next = 1
 
