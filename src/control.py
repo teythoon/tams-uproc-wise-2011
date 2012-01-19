@@ -32,12 +32,6 @@ from opcodes import (
     decode_alu_opcode,
 )
 
-class PipeLineStage(object):
-    def __init__(self):
-        self.value_a = data_bus(0)
-        self.value_b = data_bus(0)
-        self.result = data_bus(0)
-
 def ControlUnit(
     clock,
     instruction,
