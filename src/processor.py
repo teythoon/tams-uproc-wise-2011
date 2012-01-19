@@ -24,16 +24,17 @@ from common import (
 
 from alu import ALU, alu_opcode_t
 from registers import RegisterBank
+from control import ControlUnit
 
 def Processor(clock):
     number_of_registers = 32
 
-    opcode = Signal(alu_opcode_t.add)
+    alu_opcode = Signal(alu_opcode_t.add)
     operand_0 = Signal(data_bus(0))
     operand_1 = Signal(data_bus(0))
     result = Signal(data_bus(0))
 
-    alu = ALU(opcode, operand_0, operand_1, result)
+    alu = ALU(alu_opcode, operand_0, operand_1, result)
 
     update_select_a = Signal(intbv(min = 0, max = number_of_registers))
     update_value_a = Signal(data_bus(0))
@@ -55,21 +56,20 @@ def Processor(clock):
         clock,
     )
 
-    @always(clock.posedge)
-    def logic():
-        opcode.next = alu_opcode_t.add
-        operand_0.next = 1
-        operand_1.next = 1
+    opcode = Signal(data_bus(0))
 
-        update_select_a.next = 0
-        update_value_a.next = 0
-        update_select_b.next = 0
-        update_value_b.next = 0
-        write_enabled.next = False
-        select_a.next = 0
-        select_b.next = 0
+    control_unit = ControlUnit(
+        clock,
+        opcode,
+        alu_opcode, operand_0, operand_1, result,
+        update_select_a, update_value_a,
+        update_select_b, update_value_b,
+        write_enabled,
+        select_a, value_a,
+        select_b, value_b,
+    )
 
-    return alu, register_bank, logic
+    return alu, register_bank, control_unit
 
 if __name__ == '__main__':
     from myhdl import toVHDL
