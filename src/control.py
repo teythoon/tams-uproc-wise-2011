@@ -58,7 +58,7 @@ def ControlUnit(
     3 - store result
     '''
 
-    pipeline = [Signal(opcode_t.add) for i in range(3)]
+    pipeline = [Signal(data_bus(0)) for i in range(3)]
 
     operand_a = Signal(data_bus(0))
     operand_b = Signal(data_bus(0))
@@ -83,8 +83,8 @@ def ControlUnit(
         o = alu_opcode_t.add
 
         pipeline[2].next = pipeline[1]
-        operand_0.next = select_a
-        operand_1.next = select_b
+        operand_0.next = value_a
+        operand_1.next = value_b
         alu_opcode.next = o
 
         # 3nd stage
@@ -93,7 +93,7 @@ def ControlUnit(
 
         update_select_a.next = r
         update_value_a.next = result
-        update_select_a.next = 31
+        update_select_b.next = 31
         write_enabled.next = True
 
     return logic
