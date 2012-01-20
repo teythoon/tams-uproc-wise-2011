@@ -47,48 +47,76 @@ def ControlUnit(
     Pipeline stages:
 
     0 - decode instruction
-    1 - get operands
+    1 - load operands
     2 - compute
     3 - store result
     '''
 
-    pipeline = [Signal(data_bus(0)) for i in range(3)]
+    # todo: find a more appropriate name for this variable
+    depth = 3
 
-    operand_a = Signal(data_bus(0))
-    operand_b = Signal(data_bus(0))
+    p_instruction = [Signal(data_bus(i)) for i in range(depth)]
+    p_alu_opcode = [Signal(alu_opcode_t.sub) for i in range(depth)]
+    p_argument_0 = [Signal(intbv(min = 0, max = 0xff)) for i in range(depth)]
+    p_argument_1 = [Signal(intbv(min = 0, max = 0xff)) for i in range(depth)]
+    p_argument_2 = [Signal(intbv(min = 0, max = 0xff)) for i in range(depth)]
+    p_result = [Signal(data_bus(0)) for i in range(depth)]
+    p_is_valid = [Signal(False) for i in range(depth)]
+
+    # hack!
+    once = Signal(True)
 
     @always(clock.posedge)
     def logic():
-        # 0th stage
-        pipeline[0].next = instruction
+        # hack!
+        once.next = False
 
-        # 1st stage
-        pipeline[1].next = pipeline[0]
-        if is_alu_opcode(instruction):
-            #o, a, b, r = decode_alu_opcode(pipeline[0])
-            # grml, myhdl doesn't support tuple assignment
-            a = 0
-            b = 1
-            select_a.next = a
-            select_b.next = b
+        '''
+        push pipeline register values
+        '''
+        for i in range(depth - 1):
+            p_instruction[i + 1].next = p_instruction[i]
+            p_alu_opcode[i + 1].next = p_alu_opcode[i]
+            p_argument_0[i + 1].next = p_argument_0[i]
+            p_argument_1[i + 1].next = p_argument_1[i]
+            p_argument_2[i + 1].next = p_argument_2[i]
+            p_result[i + 1].next = p_result[i]
+            p_is_valid[i + 1].next = p_is_valid[i]
 
-        # 2nd stage
-        #o, a, b, r = decode_alu_opcode(pipeline[1])
-        o = alu_opcode_t.add
+        '''
+        0th stage - decode instruction
+        '''
+        # hack!
+        p_instruction[0].next = instruction
+        if once == True:
+            p_alu_opcode[0].next = alu_opcode_t.add
+        else:
+            p_alu_opcode[0].next = alu_opcode_t.sub
+        p_argument_0[0].next = 2
+        p_argument_1[0].next = 3
+        p_argument_2[0].next = 5
+        p_is_valid[0].next = once
 
-        pipeline[2].next = pipeline[1]
+        '''
+        1st stage - load operands
+        '''
+        # note the index is 0 b/c of signal semantics!
+        select_a.next = p_argument_0[0]
+        select_b.next = p_argument_1[0]
+
+        '''
+        2nd stage - execute
+        '''
+        alu_opcode.next = p_alu_opcode[1]
         operand_0.next = value_a
         operand_1.next = value_b
-        alu_opcode.next = o
 
-        # 3nd stage
-        #o, a, b, r = decode_alu_opcode(pipeline[1])
-        r = 2
-
-        update_select_a.next = r
+        '''
+        3rd stage - store result
+        '''
+        update_select_a.next = p_argument_2[2]
         update_value_a.next = result
-        update_select_b.next = 31
-        write_enabled.next = True
+        write_enabled.next = p_is_valid[2]
 
     return logic
 
