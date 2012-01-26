@@ -6,6 +6,7 @@ from target import Target
 import vhdl
 import tex
 import c
+import myhdl
 
 def usage(message = None):
     if message != None:

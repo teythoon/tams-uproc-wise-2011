@@ -1,0 +1,63 @@
+from __future__ import print_function
+
+from myhdl import (
+    enum,
+    intbv,
+
+    Simulation,
+    Signal,
+
+    bin,
+    traceSignals,
+
+    delay,
+    instance,
+    always_comb,
+)
+
+from common import (
+    data_bus,
+)
+
+from alu import (
+    alu_opcode_t,
+)
+
+opcode_t = enum(%(opcode_enumeration)s)
+conditional_t = enum(%(conditional_enumeration)s)
+format_t = enum(%(format_enumeration)s)
+
+def InstructionDecoder(instruction,
+                       opcode,
+                       conditional,
+                       modify_status,
+                       is_alu_opcode, alu_opcode,
+                       argument_0, argument_1, argument_2):
+    @always_comb
+    def logic():
+        format = format_t.r
+
+        '''
+        decode instruction
+        '''
+        %(decode_instruction)s
+
+        '''
+        decode format
+        '''
+        argument_0.next = 31
+        argument_1.next = 31
+        argument_2.next = 31
+
+        if format == format_t.r:
+            argument_0.next = instruction[23:18]
+        elif format == format_t.rr:
+            argument_0.next = instruction[23:18]
+            argument_1.next = instruction[18:13]
+
+        '''
+        decode conditional
+        '''
+        %(decode_conditional)s
+
+    return logic

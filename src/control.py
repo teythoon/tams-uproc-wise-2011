@@ -28,8 +28,8 @@ from alu import (
 
 from opcodes import (
     opcode_t,
-    is_alu_opcode,
-    decode_alu_opcode,
+    conditional_t,
+    InstructionDecoder,
 )
 
 def ControlUnit(
@@ -55,13 +55,34 @@ def ControlUnit(
     # todo: find a more appropriate name for this variable
     depth = 3
 
-    p_instruction = [Signal(data_bus(i)) for i in range(depth)]
-    p_alu_opcode = [Signal(alu_opcode_t.sub) for i in range(depth)]
+    p_opcode = [Signal(opcode_t.op_nop) for i in range(depth)]
+    p_conditional = [Signal(conditional_t.al) for i in range(depth)]
+    p_alu_opcode = [Signal(alu_opcode_t.alu_sub) for i in range(depth)]
+    p_is_alu_opcode = [Signal(False) for i in range(depth)]
+    p_modify_status = [Signal(False) for i in range(depth)]
     p_argument_0 = [Signal(intbv(min = 0, max = 0xff)) for i in range(depth)]
     p_argument_1 = [Signal(intbv(min = 0, max = 0xff)) for i in range(depth)]
     p_argument_2 = [Signal(intbv(min = 0, max = 0xff)) for i in range(depth)]
     p_result = [Signal(data_bus(0)) for i in range(depth)]
     p_is_valid = [Signal(False) for i in range(depth)]
+
+    d_instruction = Signal(data_bus(0))
+    d_opcode = Signal(opcode_t.op_nop)
+    d_conditional = Signal(conditional_t.al)
+    d_modify_status = Signal(False)
+    d_is_alu_opcode = Signal(False)
+    d_alu_opcode = Signal(alu_opcode_t.alu_add)
+    d_argument_0 = Signal(intbv(min = 0, max = 0xff))
+    d_argument_1 = Signal(intbv(min = 0, max = 0xff))
+    d_argument_2 = Signal(intbv(min = 0, max = 0xff))
+
+    instruction_decoder = InstructionDecoder(
+        d_instruction,
+        d_opcode,
+        d_conditional,
+        d_modify_status,
+        d_is_alu_opcode, d_alu_opcode,
+        d_argument_0, d_argument_1, d_argument_2)
 
     # hack!
     once = Signal(True)
@@ -75,8 +96,10 @@ def ControlUnit(
         push pipeline register values
         '''
         for i in range(depth - 1):
-            p_instruction[i + 1].next = p_instruction[i]
+            p_opcode[i + 1].next = p_opcode[i]
             p_alu_opcode[i + 1].next = p_alu_opcode[i]
+            p_is_alu_opcode[i + 1].next = p_is_alu_opcode[i]
+            p_modify_status[i + 1].next = p_modify_status[i]
             p_argument_0[i + 1].next = p_argument_0[i]
             p_argument_1[i + 1].next = p_argument_1[i]
             p_argument_2[i + 1].next = p_argument_2[i]
@@ -86,23 +109,32 @@ def ControlUnit(
         '''
         0th stage - decode instruction
         '''
+        d_instruction.next = instruction
+
         # hack!
-        p_instruction[0].next = instruction
-        if once == True:
-            p_alu_opcode[0].next = alu_opcode_t.add
-        else:
-            p_alu_opcode[0].next = alu_opcode_t.sub
-        p_argument_0[0].next = 2
-        p_argument_1[0].next = 3
-        p_argument_2[0].next = 5
         p_is_valid[0].next = once
 
         '''
         1st stage - load operands
         '''
         # note the index is 0 b/c of signal semantics!
-        select_a.next = p_argument_0[0]
-        select_b.next = p_argument_1[0]
+
+        '''
+          - remember decoding result
+        '''
+        p_opcode[1].next = d_opcode
+        p_alu_opcode[1].next = d_alu_opcode
+        p_is_alu_opcode[1].next = d_is_alu_opcode
+        p_modify_status[1].next = d_modify_status
+        p_argument_0[1].next = d_argument_0
+        p_argument_1[1].next = d_argument_1
+        p_argument_2[1].next = d_argument_2
+
+        '''
+          - load operands
+        '''
+        select_a.next = d_argument_0
+        select_b.next = d_argument_1
 
         '''
         2nd stage - execute
@@ -118,7 +150,7 @@ def ControlUnit(
         update_value_a.next = result
         write_enabled.next = p_is_valid[2]
 
-    return logic
+    return instruction_decoder, logic
 
 def bench():
     pass

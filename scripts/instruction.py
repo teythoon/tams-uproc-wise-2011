@@ -52,8 +52,16 @@ class Instruction(object):
         return self.bin[:-3]
 
     @property
+    def opcode_int(self):
+        return int(self.bin[:-3], 2)
+
+    @property
     def conditional_bin(self):
         return self.bin[-3:]
+
+    @property
+    def conditional_int(self):
+        return int(self.bin[-3:], 2)
 
     @property
     def mnemonic(self):

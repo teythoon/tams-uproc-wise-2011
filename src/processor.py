@@ -29,7 +29,7 @@ from control import ControlUnit
 def Processor(clock):
     number_of_registers = 32
 
-    alu_opcode = Signal(alu_opcode_t.add)
+    alu_opcode = Signal(alu_opcode_t.alu_add)
     operand_0 = Signal(data_bus(0))
     operand_1 = Signal(data_bus(0))
     result = Signal(data_bus(0))

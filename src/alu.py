@@ -21,21 +21,20 @@ from common import (
     data_bus,
 )
 
-alu_opcode_t = enum('add', 'sub', 'mul', 'div',
+alu_opcode_t = enum('alu_add', 'alu_sub', 'alu_mul', 'alu_div',
                     'alu_and', 'alu_or', 'alu_xor', 'alu_not',
-                    'alu_eq', 'alu_neq',
-                    'alu_gt', 'alu_lt', 'alu_ge', 'alu_le',)
+                    'alu_cmp',)
 
 def ALU(opcode, operand_0, operand_1, result):
     @always_comb
     def logic():
-        if opcode == alu_opcode_t.add:
+        if opcode == alu_opcode_t.alu_add:
             result.next = operand_0 + operand_1
-        elif opcode == alu_opcode_t.sub:
+        elif opcode == alu_opcode_t.alu_sub:
             result.next = operand_0 - operand_1
-        elif opcode == alu_opcode_t.mul:
+        elif opcode == alu_opcode_t.alu_mul:
             result.next = operand_0 * operand_1
-        elif opcode == alu_opcode_t.div:
+        elif opcode == alu_opcode_t.alu_div:
             result.next = operand_0 // operand_1
         elif opcode == alu_opcode_t.alu_and:
             result.next = operand_0 & operand_1
@@ -45,23 +44,14 @@ def ALU(opcode, operand_0, operand_1, result):
             result.next = operand_0 ^ operand_1
         elif opcode == alu_opcode_t.alu_not:
             result.next = not operand_0
-        elif opcode == alu_opcode_t.alu_eq:
-            result.next = operand_0 == operand_1
-        elif opcode == alu_opcode_t.alu_neq:
-            result.next = operand_0 != operand_1
-        elif opcode == alu_opcode_t.alu_gt:
-            result.next = operand_0 > operand_1
-        elif opcode == alu_opcode_t.alu_lt:
+        elif opcode == alu_opcode_t.alu_cmp:
+            # todo: fix cmp
             result.next = operand_0 < operand_1
-        elif opcode == alu_opcode_t.alu_ge:
-            result.next = operand_0 >= operand_1
-        elif opcode == alu_opcode_t.alu_le:
-            result.next = operand_0 <= operand_1
 
     return logic
 
 def bench():
-    opcode = Signal(alu_opcode_t.add)
+    opcode = Signal(alu_opcode_t.alu_add)
     operand_0 = Signal(data_bus(0))
     operand_1 = Signal(data_bus(0))
     result = Signal(data_bus(0))
@@ -72,8 +62,8 @@ def bench():
     def stimulus():
         for i in range(100):
             for operator, compute_result in (
-                (alu_opcode_t.add, lambda a, b: a + b),
-                (alu_opcode_t.sub, lambda a, b: a - b),
+                (alu_opcode_t.alu_add, lambda a, b: a + b),
+                (alu_opcode_t.alu_sub, lambda a, b: a - b),
                 ):
                 a = random.randrange(-2 ** 30, 2 ** 30)
                 b = random.randrange(-2 ** 30, 2 ** 30)
@@ -96,7 +86,7 @@ def test_bench():
 if __name__ == '__main__':
     from myhdl import toVHDL
 
-    opcode = Signal(alu_opcode_t.add)
+    opcode = Signal(alu_opcode_t.alu_add)
     operand_0 = Signal(data_bus(0))
     operand_1 = Signal(data_bus(0))
     result = Signal(data_bus(0))

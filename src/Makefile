@@ -1,9 +1,11 @@
-TARGETS = processor
-TESTS = alu_tb registers_tb
+.PHONY: all
+all: Processor.vhd
 
-processor: instructions.vhdl
+.PHONY: Processor.vhd
+Processor.vhd:
+	python processor.py
 
-instructions.vhdl: opcodes.yaml
-	../scripts/opcodes.py vhdl "$<" "$@"
+opcodes.py: opcodes.yaml
+	../scripts/opcodes.py myhdl "$<" "$@"
 
 include Makefile.inc
