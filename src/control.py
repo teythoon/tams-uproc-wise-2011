@@ -62,9 +62,10 @@ def ControlUnit(
     p_alu_opcode = [Signal(alu_opcode_t.alu_sub) for i in range(depth)]
     p_is_alu_opcode = [Signal(False) for i in range(depth)]
     p_modify_status = [Signal(False) for i in range(depth)]
-    p_argument_0 = [Signal(intbv(min = 0, max = 0xff)) for i in range(depth)]
-    p_argument_1 = [Signal(intbv(min = 0, max = 0xff)) for i in range(depth)]
-    p_argument_2 = [Signal(intbv(min = 0, max = 0xff)) for i in range(depth)]
+    p_argument_0 = [Signal(intbv()[5:]) for i in range(depth)]
+    p_argument_1 = [Signal(intbv()[19:]) for i in range(depth)]
+    p_argument_2 = [Signal(intbv()[5:]) for i in range(depth)]
+    p_argument_3 = [Signal(intbv()[9:]) for i in range(depth)]
     p_result = [Signal(data_bus(0)) for i in range(depth)]
     p_is_valid = [Signal(False) for i in range(depth)]
 
@@ -74,9 +75,10 @@ def ControlUnit(
     d_modify_status = Signal(False)
     d_is_alu_opcode = Signal(False)
     d_alu_opcode = Signal(alu_opcode_t.alu_add)
-    d_argument_0 = Signal(intbv(min = 0, max = 0xff))
-    d_argument_1 = Signal(intbv(min = 0, max = 0xff))
-    d_argument_2 = Signal(intbv(min = 0, max = 0xff))
+    d_argument_0 = Signal(intbv()[5:])
+    d_argument_1 = Signal(intbv()[19:])
+    d_argument_2 = Signal(intbv()[5:])
+    d_argument_3 = Signal(intbv()[9:])
 
     instruction_decoder = InstructionDecoder(
         d_instruction,
@@ -153,13 +155,21 @@ def ControlUnit(
         alu_opcode.next = p_alu_opcode[2]
         operand_0.next = value_a
         operand_1.next = value_b
+        p_result[3].next = result
 
         '''
         4th stage - store result
         '''
-        update_select_a.next = p_argument_2[3]
-        update_value_a.next = result
-        write_enabled.next = p_is_valid[3]
+        write_enabled.next = False
+
+        if p_is_alu_opcode[3]:
+            update_select_a.next = p_argument_2[3]
+            update_value_a.next = p_result[3]
+            write_enabled.next = True
+        elif p_opcode[3] == opcode_t.op_li:
+            update_select_a.next = p_argument_0[3]
+            update_value_a.next = p_argument_1[3]
+            write_enabled.next = True
 
     return instruction_decoder, logic
 

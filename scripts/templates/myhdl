@@ -58,6 +58,9 @@ def InstructionDecoder(instruction,
             argument_0.next = instruction[24:19]
             argument_1.next = instruction[19:14]
             argument_2.next = instruction[14:9]
+        elif format == format_t.ri:
+            argument_0.next = instruction[24:19]
+            argument_1.next = instruction[19:]
 
         '''
         decode conditional
