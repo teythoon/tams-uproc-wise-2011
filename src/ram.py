@@ -27,7 +27,7 @@ def Ram(clock, data_out, data_in, address, write_enabled, number_of_ram=128, fro
     mem = []
     if from_file:
         content = from_file.read()
-        while len(content) > 4 :
+        while len(content) > 3:
             word, content = content[:4], content[4:]
             mem.append(Signal(intbv(struct.unpack('!I', word)[0])[32:]))
 
