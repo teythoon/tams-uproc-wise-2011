@@ -18,7 +18,7 @@ class MyHDL(Target):
         return ', '.join(repr(name)
                          for (name, description) in self.definitions['formats'].items())
 
-    instruction_when = r'''if instruction[31:26] == {0.opcode_int}:
+    instruction_when = r'''if instruction[32:27] == {0.opcode_int}:
             opcode.next = opcode_t.op_{0.instruction}
             modify_status.next = {1}
             is_alu_opcode.next = {2}
@@ -37,7 +37,7 @@ class MyHDL(Target):
                 )
             for instruction in self.opcodes)
 
-    conditional_when = r'''if instruction[26:23] == {0}:
+    conditional_when = r'''if instruction[27:24] == {0}:
             conditional.next = conditional_t.{1} # {2}
         '''
 

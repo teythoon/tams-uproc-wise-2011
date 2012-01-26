@@ -50,10 +50,14 @@ def InstructionDecoder(instruction,
         argument_2.next = 31
 
         if format == format_t.r:
-            argument_0.next = instruction[23:18]
+            argument_0.next = instruction[24:19]
         elif format == format_t.rr:
-            argument_0.next = instruction[23:18]
-            argument_1.next = instruction[18:13]
+            argument_0.next = instruction[24:19]
+            argument_1.next = instruction[19:14]
+        elif format == format_t.rrri:
+            argument_0.next = instruction[24:19]
+            argument_1.next = instruction[19:14]
+            argument_2.next = instruction[14:9]
 
         '''
         decode conditional
