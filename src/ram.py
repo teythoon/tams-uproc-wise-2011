@@ -1,6 +1,6 @@
 from __future__ import print_function
 
-import random
+import struct
 
 from myhdl import (
     enum,
@@ -22,9 +22,17 @@ from common import (
     data_bus,
 )
 
-def Ram(clock, data_out, data_in, address, write_enabled, number_of_ram=128):
+def Ram(clock, data_out, data_in, address, write_enabled, number_of_ram=128, from_file = False):
 
-    mem = [Signal(intbv(0)[32:]) for i in range(number_of_ram)]
+    mem = []
+    if from_file:
+        content = from_file.read()
+        while len(content) > 4 :
+            word, content = content[:4], content[4:]
+            mem.append(Signal(intbv(struct.unpack('!I', word)[0])[32:]))
+
+    while len(mem) < number_of_ram:
+        mem.append(Signal(intbv(0)[32:]))
 
     @always(clock.posedge)
     def write():

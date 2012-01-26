@@ -25,8 +25,9 @@ from common import (
 from alu import ALU, alu_opcode_t
 from registers import RegisterBank
 from control import ControlUnit
+from ram import Ram
 
-def Processor(clock):
+def Processor(clock, dbus, abus):
     number_of_registers = 32
 
     alu_opcode = Signal(alu_opcode_t.alu_add)
@@ -71,7 +72,7 @@ def Processor(clock):
 
     return alu, register_bank, control_unit
 
-def bench(number_of_registers = 32):
+def bench(number_of_registers = 32, ram_from_file = False):
 
     def ClockDriver(clock, period = 100):
         @always(delay(period / 2))
@@ -83,20 +84,42 @@ def bench(number_of_registers = 32):
     clock = Signal(False)
     clock_driver = ClockDriver(clock)
 
-    processor = Processor(clock)
+    abus = Signal(data_bus(0))
+    dbus = Signal(data_bus(0))
+    data_in = Signal(data_bus(0))
+    write_enabled = Signal(False)
 
-    return clock_driver, processor
+    ram = Ram(
+        clock,
+        dbus, data_in,
+        abus,
+        write_enabled,
+        from_file = ram_from_file,
+    )
 
-def test_bench():
-    sim = Simulation(traceSignals(bench))
+    processor = Processor(clock, dbus, abus)
+
+    return clock_driver, ram, processor
+
+def test_bench(ram_from_file):
+    sim = Simulation(traceSignals(bench, ram_from_file = ram_from_file))
     sim.run()
 
 if __name__ == '__main__':
-    from myhdl import toVHDL
+    import sys
 
-    clock = Signal(False)
+    if sys.argv[1] == 'convert':
+        from myhdl import toVHDL
 
-    toVHDL(
-        Processor,
-        clock,
-    )
+        clock = Signal(False)
+        abus = Signal(data_bus(0))
+        dbus = Signal(data_bus(0))
+
+        toVHDL(
+            Processor,
+            clock,
+            dbus,
+            abus,
+        )
+    else:
+        test_bench(open(sys.argv[1]))
