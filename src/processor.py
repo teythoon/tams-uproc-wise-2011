@@ -48,12 +48,17 @@ def Processor(clock, dbus, abus):
     select_b = Signal(intbv(min = 0, max = number_of_registers))
     value_b = Signal(data_bus(0))
 
+    instruction_register = Signal(data_bus(0))
+    update_instruction_register = Signal(data_bus(0))
+    write_instruction_register = Signal(False)
+
     register_bank = RegisterBank(
         update_select_a, update_value_a,
         update_select_b, update_value_b,
         write_enabled,
         select_a, value_a,
         select_b, value_b,
+        instruction_register, update_instruction_register, write_instruction_register,
         clock,
     )
 
@@ -68,6 +73,8 @@ def Processor(clock, dbus, abus):
         write_enabled,
         select_a, value_a,
         select_b, value_b,
+        instruction_register, update_instruction_register, write_instruction_register,
+        dbus, abus,
     )
 
     return alu, register_bank, control_unit

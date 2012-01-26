@@ -41,6 +41,8 @@ def ControlUnit(
     write_enabled,
     select_a, value_a,
     select_b, value_b,
+    instruction_register, update_instruction_register, write_instruction_register,
+    dbus, abus,
     ):
 
     '''
@@ -53,7 +55,7 @@ def ControlUnit(
     '''
 
     # todo: find a more appropriate name for this variable
-    depth = 3
+    depth = 4
 
     p_opcode = [Signal(opcode_t.op_nop) for i in range(depth)]
     p_conditional = [Signal(conditional_t.al) for i in range(depth)]
@@ -107,17 +109,26 @@ def ControlUnit(
             p_is_valid[i + 1].next = p_is_valid[i]
 
         '''
-        0th stage - decode instruction
+        0th stage - fetch instruction
         '''
-        d_instruction.next = instruction
+        abus.next = instruction_register
+
+        # hack! increment ir
+        update_instruction_register.next = instruction_register + 1
+        write_instruction_register.next = True
 
         # hack!
         p_is_valid[0].next = once
 
         '''
-        1st stage - load operands
+        1st stage - decode instruction
         '''
-        # note the index is 0 b/c of signal semantics!
+        d_instruction.next = dbus
+
+        '''
+        2nd stage - load operands
+        '''
+        # note the index is 1 b/c of signal semantics!
 
         '''
           - remember decoding result
@@ -137,18 +148,18 @@ def ControlUnit(
         select_b.next = d_argument_1
 
         '''
-        2nd stage - execute
+        3rd stage - execute
         '''
-        alu_opcode.next = p_alu_opcode[1]
+        alu_opcode.next = p_alu_opcode[2]
         operand_0.next = value_a
         operand_1.next = value_b
 
         '''
-        3rd stage - store result
+        4th stage - store result
         '''
-        update_select_a.next = p_argument_2[2]
+        update_select_a.next = p_argument_2[3]
         update_value_a.next = result
-        write_enabled.next = p_is_valid[2]
+        write_enabled.next = p_is_valid[3]
 
     return instruction_decoder, logic
 
