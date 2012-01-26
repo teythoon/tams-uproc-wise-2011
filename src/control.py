@@ -88,14 +88,8 @@ def ControlUnit(
         d_is_alu_opcode, d_alu_opcode,
         d_argument_0, d_argument_1, d_argument_2)
 
-    # hack!
-    once = Signal(True)
-
     @always(clock.posedge)
     def logic():
-        # hack!
-        once.next = False
-
         '''
         push pipeline register values
         '''
@@ -118,9 +112,6 @@ def ControlUnit(
         # hack! increment ir
         update_instruction_register.next = instruction_register + 1
         write_instruction_register.next = True
-
-        # hack!
-        p_is_valid[0].next = once
 
         '''
         1st stage - decode instruction
