@@ -44,8 +44,15 @@ def RegisterBank(
         '''
         Handles reads to the register bank.
         '''
-        value_a.next = registers[select_a]
-        value_b.next = registers[select_b]
+        if select_a == ZERO_REGISTER:
+            value_a.next = 0
+        else:
+            value_a.next = registers[select_a]
+
+        if select_b == ZERO_REGISTER:
+            value_b.next = 0
+        else:
+            value_b.next = registers[select_b]
 
     @always(clock.posedge)
     def logic():
@@ -53,8 +60,10 @@ def RegisterBank(
         Updates the values stored in the register bank.
         '''
         if write_enabled:
-            registers[update_select_a].next = update_value_a
-            registers[update_select_b].next = update_value_b
+            if update_select_a != ZERO_REGISTER:
+                registers[update_select_a].next = update_value_a
+            if update_select_b != ZERO_REGISTER:
+                registers[update_select_b].next = update_value_b
 
 
     return logic, read_logic
