@@ -88,6 +88,12 @@ def ControlUnit(
         d_is_alu_opcode, d_alu_opcode,
         d_argument_0, d_argument_1, d_argument_2)
 
+    @always(clock.posedge, clock.negedge)
+    def inc_instruction_pointer():
+        # hack! increment ir
+        update_instruction_register.next = instruction_register + 1
+        write_instruction_register.next = True
+
     @always(clock.posedge)
     def logic():
         '''
@@ -108,10 +114,6 @@ def ControlUnit(
         0th stage - fetch instruction
         '''
         abus.next = instruction_register
-
-        # hack! increment ir
-        update_instruction_register.next = instruction_register + 1
-        write_instruction_register.next = True
 
         '''
         1st stage - decode instruction
@@ -162,7 +164,7 @@ def ControlUnit(
             update_value_a.next = p_argument_1[3]
             write_enabled.next = True
 
-    return instruction_decoder, logic
+    return instruction_decoder, inc_instruction_pointer, logic
 
 def bench():
     pass
