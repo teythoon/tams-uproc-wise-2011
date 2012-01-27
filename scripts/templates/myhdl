@@ -32,7 +32,7 @@ def InstructionDecoder(instruction,
                        conditional,
                        modify_status,
                        is_alu_opcode, alu_opcode,
-                       argument_0, argument_1, argument_2):
+                       argument_0, argument_1, argument_2, argument_3):
     @always_comb
     def logic():
         format = format_t.r
@@ -48,6 +48,7 @@ def InstructionDecoder(instruction,
         argument_0.next = 31
         argument_1.next = 31
         argument_2.next = 31
+        argument_3.next = 31
 
         if format == format_t.r:
             argument_0.next = instruction[24:19]
@@ -58,6 +59,7 @@ def InstructionDecoder(instruction,
             argument_0.next = instruction[24:19]
             argument_1.next = instruction[19:14]
             argument_2.next = instruction[14:9]
+            argument_3.next = instruction[9:]
         elif format == format_t.ri:
             argument_0.next = instruction[24:19]
             argument_1.next = instruction[19:]

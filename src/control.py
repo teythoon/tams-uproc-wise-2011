@@ -87,7 +87,7 @@ def ControlUnit(
         d_conditional,
         d_modify_status,
         d_is_alu_opcode, d_alu_opcode,
-        d_argument_0, d_argument_1, d_argument_2)
+        d_argument_0, d_argument_1, d_argument_2, d_argument_3)
 
     @always(clock.posedge)
     def logic():
@@ -102,6 +102,7 @@ def ControlUnit(
             p_argument_0[i + 1].next = p_argument_0[i]
             p_argument_1[i + 1].next = p_argument_1[i]
             p_argument_2[i + 1].next = p_argument_2[i]
+            p_argument_3[i + 1].next = p_argument_3[i]
             p_result[i + 1].next = p_result[i]
             p_is_valid[i + 1].next = p_is_valid[i]
 
@@ -135,6 +136,7 @@ def ControlUnit(
         p_argument_0[1].next = d_argument_0
         p_argument_1[1].next = d_argument_1
         p_argument_2[1].next = d_argument_2
+        p_argument_3[1].next = d_argument_3
 
         '''
           - load operands
