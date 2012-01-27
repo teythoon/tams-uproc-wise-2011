@@ -22,7 +22,6 @@ from common import (
     data_bus,
 )
 
-PROGRAM_COUNTER = 30
 ZERO_REGISTER = 31
 
 def RegisterBank(
@@ -31,7 +30,6 @@ def RegisterBank(
     write_enabled,
     select_a, value_a,
     select_b, value_b,
-    instruction_register, update_instruction_register, write_instruction_register,
     clock,
     number_of_registers = 32):
 
@@ -48,7 +46,6 @@ def RegisterBank(
         '''
         value_a.next = registers[select_a]
         value_b.next = registers[select_b]
-        instruction_register.next = registers[PROGRAM_COUNTER]
 
     @always(clock.posedge)
     def logic():
@@ -59,8 +56,6 @@ def RegisterBank(
             registers[update_select_a].next = update_value_a
             registers[update_select_b].next = update_value_b
 
-        if write_instruction_register:
-            registers[PROGRAM_COUNTER].next = update_instruction_register
 
     return logic, read_logic
 
@@ -76,10 +71,6 @@ def bench(number_of_registers = 32):
     select_b = Signal(intbv(min = 0, max = number_of_registers))
     result_b = Signal(data_bus(0))
 
-    instruction_register = Signal(data_bus(0))
-    update_instruction_register = Signal(data_bus(0))
-    write_instruction_register = Signal(False)
-
     clock = Signal(False)
 
     register_bank = RegisterBank(
@@ -88,7 +79,6 @@ def bench(number_of_registers = 32):
         write_enabled,
         select_a, result_a,
         select_b, result_b,
-        instruction_register, update_instruction_register, write_instruction_register,
         clock,
         number_of_registers,
     )
