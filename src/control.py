@@ -66,7 +66,7 @@ def ControlUnit(
     p_argument_2 = [Signal(intbv()[5:]) for i in range(depth)]
     p_argument_3 = [Signal(intbv()[9:]) for i in range(depth)]
     p_result = [Signal(data_bus(0)) for i in range(depth)]
-    p_is_valid = [Signal(False) for i in range(depth)]
+    p_is_valid = [Signal(True) for i in range(depth)]
 
     d_instruction = Signal(data_bus(0))
     d_opcode = Signal(opcode_t.op_nop)
@@ -151,9 +151,21 @@ def ControlUnit(
         p_result[3].next = result
 
         '''
+          - handle branches
+        '''
+        if p_opcode[2] == opcode_t.op_br:
+            for i in range(1, 3):
+                p_is_valid[i].next = False
+            # todo: this is a quick and dirty absolute jump
+            instruction_register.next = p_argument_0[2]
+
+        '''
         4th stage - store result
         '''
         write_enabled.next = False
+
+        if not p_is_valid[3]:
+            return
 
         if p_is_alu_opcode[3]:
             update_select_a.next = p_argument_2[3]
